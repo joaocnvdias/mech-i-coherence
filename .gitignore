@@ -2,3 +2,5 @@ checkpoints
 .DS_Store
 __pycache__/
 datasets
+Llama*
+meta*
