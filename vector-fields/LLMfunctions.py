@@ -1,4 +1,26 @@
 import torch
+from transformers import GPT2Tokenizer, GPT2LMHeadModel
+
+def load_gpt2XL(device):
+    tokenizer = GPT2Tokenizer.from_pretrained("gpt2-xl")
+    model = GPT2LMHeadModel.from_pretrained("gpt2-xl", output_hidden_states=True)
+    model.eval()
+
+    cuda = load_device(device)
+    device = torch.device(cuda if torch.cuda.is_available() else "cpu")
+    model = model.to(device)
+
+    return tokenizer, model, device
+
+def load_device(device):
+    if device==0:
+        return 'cuda:0'
+    elif device==1:
+        return 'cuda:1'
+    elif device ==-1:
+        return 'cpu'
+    else:
+        raise Exception('Return 0 or 1 for GPUs or -1 for CPU')
 
 def generate_multiple_completion(tokenizer, device, model, prompt, repetion_value=1.2, printing=False,num_return_sequences=1):
     inputs = tokenizer(prompt, return_tensors="pt").to(device)
