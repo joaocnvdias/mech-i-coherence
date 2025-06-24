@@ -1,4 +1,4 @@
-checkpoints
+*checkpoints
 .DS_Store
 __pycache__/
 datasets
