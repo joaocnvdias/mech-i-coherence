@@ -1,5 +1,7 @@
 import torch
+import json
 from transformers import GPT2Tokenizer, GPT2LMHeadModel
+from EnergyComputations import energy_pipeline
 
 def load_gpt2XL(device):
     tokenizer = GPT2Tokenizer.from_pretrained("gpt2-xl")
@@ -59,3 +61,20 @@ def inference_activations(model, gen_ids):
         )
 
     return [layer[0] for layer in full_outputs.hidden_states] #list with pt tensor of activations in each element
+
+def energy_loop(generated_ids, model):
+    energy_values = []
+    for i in range(generated_ids.shape[0]):
+        tensor = generated_ids[i:i+1] #reshape to 1xseq_length
+        activations = inference_activations(model, tensor)
+        energy_values.append(energy_pipeline(activations))
+    
+    return energy_values
+
+def energy_to_json(prompt_sufix, generated_ids, energy_values):
+    file_ids = 'checkpoints/ids'+prompt_sufix+'.pt'
+    file_energy = 'checkpoints/energy'+prompt_sufix+'.json'
+    
+    torch.save(generated_ids, file_ids) #save ids as pt
+    with open(file_energy, 'w') as f:
+        json.dump(energy_values, f) #save values as json

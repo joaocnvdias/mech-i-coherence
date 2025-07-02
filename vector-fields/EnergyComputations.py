@@ -15,7 +15,6 @@ def compute_dot_product(vector_transitions_trajectory):
 def average_layer_dot_product(layer_dot_product):
     return layer_dot_product.mean()
 
-#for all layers
 def average_dot_product(dot_product_list):
     return torch.stack([average_layer_dot_product(layer_dot_product) for layer_dot_product in dot_product_list])
 
