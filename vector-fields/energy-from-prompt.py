@@ -5,7 +5,7 @@ def main():
     #load prompt from .txt
     prompt_topic = 'spaceship'
     prompt_sufix = '_' + prompt_topic
-    with open('prompts/'+prompt_topic+'.txt') as file:
+    with open('prompts-comp/'+prompt_topic+'.txt') as file:
         prompt = file.read()
     
     tokenizer, model, device = load_gpt2XL(1) #0 for cuda:0 and 1 for cuda:1
