@@ -1,0 +1,5 @@
+[{"role": "user", "content": "Write a very short story. Make sure that your generation ends with a clear ending (eg: THE END). Additionally, include the following:
+- A blonde soccer player named Viktor as the main character
+- Viktor's team wears green and white uniforms
+- The story should conclude with Viktor's team winning the National League's championship
+Include a statisfactory conclusion with him winning the championship."}]

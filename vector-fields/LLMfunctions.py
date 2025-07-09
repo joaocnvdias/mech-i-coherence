@@ -59,7 +59,7 @@ def inference_activations(model, gen_ids):
             output_hidden_states=True,
             return_dict=True
         )
-
+    #remove 1st tensor dimension so its 2D
     return [layer[0] for layer in full_outputs.hidden_states] #list with pt tensor of activations in each element
 
 def energy_loop(generated_ids, model):
