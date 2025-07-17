@@ -1,20 +1,7 @@
 import torch
-import json
-from transformers import GPT2Tokenizer, GPT2LMHeadModel
-from EnergyComputations import energy_pipeline
+from transformers import GPT2Tokenizer, GPT2LMHeadModel, AutoTokenizer, AutoModelForCausalLM
 
-def load_gpt2XL(device):
-    tokenizer = GPT2Tokenizer.from_pretrained("gpt2-xl")
-    model = GPT2LMHeadModel.from_pretrained("gpt2-xl", output_hidden_states=True)
-    model.eval()
-
-    cuda = load_device(device)
-    device = torch.device(cuda if torch.cuda.is_available() else "cpu")
-    model = model.to(device)
-
-    return tokenizer, model, device
-
-def load_device(device):
+def choose_device(device):
     if device==0:
         return 'cuda:0'
     elif device==1:
@@ -23,6 +10,20 @@ def load_device(device):
         return 'cpu'
     else:
         raise Exception('Return 0 or 1 for GPUs or -1 for CPU')
+
+def load_device(cuda_id):
+    cuda = choose_device(cuda_id)
+    device = torch.device(cuda if torch.cuda.is_available() else "cpu")
+    return device
+
+def load_gpt2XL(cuda_id):
+    tokenizer = GPT2Tokenizer.from_pretrained("gpt2-xl")
+    model = GPT2LMHeadModel.from_pretrained("gpt2-xl", output_hidden_states=True)
+    model.eval()
+    device = load_device(cuda_id)
+    model = model.to(device)
+
+    return tokenizer, model, device
 
 def generate_multiple_completion(tokenizer, device, model, prompt, repetion_value=1.2, printing=False,num_return_sequences=1):
     inputs = tokenizer(prompt, return_tensors="pt").to(device)
@@ -62,19 +63,38 @@ def inference_activations(model, gen_ids):
     #remove 1st tensor dimension so its 2D
     return [layer[0] for layer in full_outputs.hidden_states] #list with pt tensor of activations in each element
 
-def energy_loop(generated_ids, model):
-    energy_values = []
-    for i in range(generated_ids.shape[0]):
-        tensor = generated_ids[i:i+1] #reshape to 1xseq_length
-        activations = inference_activations(model, tensor)
-        energy_values.append(energy_pipeline(activations))
+def load_AutoModel(model_id,cuda_id):
     
-    return energy_values
+    tokenizer = AutoTokenizer.from_pretrained(model_id, padding_side = "left") 
+    tokenizer.pad_token_id = tokenizer.eos_token_id #required in llama because no padding token is defined
+    model = AutoModelForCausalLM.from_pretrained(model_id, torch_dtype=torch.bfloat16)
+    terminators = [
+        tokenizer.eos_token_id,
+        tokenizer.convert_tokens_to_ids("<|eot_id|>")
+    ]
+    device = load_device(cuda_id)
+    model = model.to(device)
 
-def energy_to_json(prompt_sufix, generated_ids, energy_values):
-    file_ids = 'checkpoints/ids'+prompt_sufix+'.pt'
-    file_energy = 'checkpoints/energy'+prompt_sufix+'.json'
+    return tokenizer, model, device, terminators
+
+def prepare_llama_prompt(tokenizer, prompt):
+    text = tokenizer.apply_chat_template(prompt, add_generation_prompt=True, tokenize=False) 
+    inputs = tokenizer(text, padding="longest", return_tensors="pt") #transform into pt tensors
+    inputs = {key: val.cuda() for key, val in inputs.items()} #move inputs into cuda
+    return inputs
+
+def llama_gen(model, inputs, tokenizer, terminators, num_generations):
+    generations = model.generate(
+        **inputs,
+        max_new_tokens=400,
+        do_sample=True,
+        temperature=0.7,
+        top_p=0.9,
+        pad_token_id=tokenizer.eos_token_id,
+        eos_token_id=terminators,
+        num_return_sequences=num_generations  
+    )
+
+    return generations
     
-    torch.save(generated_ids, file_ids) #save ids as pt
-    with open(file_energy, 'w') as f:
-        json.dump(energy_values, f) #save values as json
+    
