@@ -61,7 +61,7 @@ def inference_activations(model, gen_ids):
             return_dict=True
         )
     #remove 1st tensor dimension so its 2D
-    return [layer[0] for layer in full_outputs.hidden_states] #list with pt tensor of activations in each element
+    return [layer[0] for layer in full_outputs.hidden_states[1:]] #list with pt tensor of activations in each element
 
 def load_AutoModel(model_id,cuda_id):
     
@@ -77,10 +77,10 @@ def load_AutoModel(model_id,cuda_id):
 
     return tokenizer, model, device, terminators
 
-def prepare_llama_prompt(tokenizer, prompt):
+def prepare_llama_prompt(tokenizer, prompt, device):
     text = tokenizer.apply_chat_template(prompt, add_generation_prompt=True, tokenize=False) 
     inputs = tokenizer(text, padding="longest", return_tensors="pt") #transform into pt tensors
-    inputs = {key: val.cuda() for key, val in inputs.items()} #move inputs into cuda
+    inputs = {key: val.to(device) for key, val in inputs.items()} #move inputs into cuda
     return inputs
 
 def llama_gen(model, inputs, tokenizer, terminators, num_generations):
