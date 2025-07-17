@@ -10,10 +10,11 @@ def compute_vectors(hidden_states):
 def compute_angle_layer(layer_vectors):
     angles=[]
 
-    for i in range(layer_vectors.shape[0]-1):
+    for i in range(layer_vectors.shape[0]-1): 
+        #grab consecutive vectors
         a = layer_vectors[i,:]
         b = layer_vectors[i+1,:]
-        angles.append(acos(torch.dot(a, b) / (torch.norm(a) * torch.norm(b))))
+        angles.append(acos(torch.dot(a, b) / (torch.norm(a) * torch.norm(b)))) #angle equation from vec dot product
 
     return torch.tensor(angles, dtype=torch.bfloat16)
 
@@ -21,8 +22,7 @@ def compute_angle(vector_transitions_trajectory):
     return [compute_angle_layer(layer_vectors) for layer_vectors in vector_transitions_trajectory]
 
 def average_layer_angle(layer_dot_product):
-    # return layer_dot_product.nanmean()
-    return layer_dot_product.nanmean()
+    return layer_dot_product.nanmean() #ignore NaNs when computing mean
 
 def average_angle(dot_product_list):
     return torch.stack([average_layer_angle(layer_dot_product) for layer_dot_product in dot_product_list])
@@ -32,5 +32,5 @@ def sum_layer_energy(average_layer_dot_product):
 
 def energy_pipeline(layer_hidden_states):
     if not isinstance(layer_hidden_states, list):
-        raise TypeError("Expected a list of tensors (one per layer + embedding layer).")
+        raise TypeError("Expected a list of tensors (one per layer of the model). Don't include the model's embedding layer")
     return sum_layer_energy(average_angle(compute_angle(compute_vectors(layer_hidden_states)))).item()

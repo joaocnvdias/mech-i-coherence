@@ -7,20 +7,14 @@ def main():
     model_id = "meta-llama/Meta-Llama-3.1-8B-Instruct"
     prompt_type = 'generation' #or 'completion'
     prompt_topic='viktor'
-    nr_gens = 10
+    nr_gens = 200
 
     prompt = load_prompts(prompt_type, prompt_topic)
     tokenizer, model, device, terminators = load_AutoModel(model_id, cuda_id=0)
-    model_inputs = prepare_llama_prompt(tokenizer, prompt)
+    model_inputs = prepare_llama_prompt(tokenizer, prompt, device)
     gen_ids = llama_gen(model, model_inputs, tokenizer, terminators, num_generations=nr_gens)
     energy_values = energy_loop_llama(model_inputs, nr_gens, gen_ids, model)
     energy_to_json(prompt_topic, gen_ids, energy_values)
-
-    #old code
-    # tokenizer, model, device = load_gpt2XL(0) #0 for cuda:0 and 1 for cuda:1
-    # generated_ids = generate_multiple_completion(tokenizer, device, model, prompt,repetion_value=1.2, printing=False, num_return_sequences=10)
-    # energy_values = energy_loop(generated_ids, model)
-    # energy_to_json(prompt_topic, generated_ids, energy_values)
 
 if __name__ == '__main__': 
     main()

@@ -24,10 +24,10 @@ def energy_loop(generated_ids, model):
     return energy_values
 
 def energy_loop_llama(model_inputs, num_generations, generations, model):
-    tensor_size_prompt = model_inputs['input_ids'].shape[1]
+    tensor_size_prompt = model_inputs['input_ids'].shape[1] #obtain prompt token size
     energy_values = []
     for i in range(num_generations):
-        tensor = generations[i,tensor_size_prompt:].unsqueeze(0) #shape 1xseq_length; remove prompt tokens
+        tensor = generations[i,tensor_size_prompt:].unsqueeze(0) #remove prompt tokens from generation
         activations = inference_activations(model,tensor)
         energy_values.append(energy_pipeline(activations))
 
