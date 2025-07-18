@@ -11,8 +11,8 @@ def main():
     model_inputs = prepare_llama_prompt(tokenizer, prompt, device)
     gen_ids = llama_gen(model, model_inputs, tokenizer, terminators, num_generations=nr_gens)
 
-    prompt_text = tokenizer.decode(model_inputs['input_ids'][0], skip_special_token=True)
-    decoded_gens = tokenizer.batch_decode(gen_ids, skip_special_token = True)
+    prompt_text = tokenizer.decode(model_inputs['input_ids'][0], skip_special_tokens=True)
+    decoded_gens = tokenizer.batch_decode(gen_ids, skip_special_tokens=True)
     decoded_stories = [decoded_generation[len(prompt_text):] for decoded_generation in decoded_gens] 
     
     for i in range(len(decoded_stories)):
