@@ -1,0 +1,4 @@
+[{"role": "user", "content": "Write a science fiction mystery story. The story must conclude with the main character playing a series of musical notes that causes a derelict starship to power up and set a course for an unknown galaxy. Additionally, you must include the following three elements:
+- A protagonist who is a xenolinguist, an expert in alien languages.
+- A sentient, crystalline lifeform discovered on the ship.
+- A ship's logbook that appears to be written in indecipherable glyphs."}]

@@ -1,0 +1,4 @@
+[{"role": "user", "content": "Write a very short story that is mostly coherent but contains sudden, random moments of incoherence that do not connect to the plot. For example, a character might suddenly start describing the taste of the color blue. The story must include:
+- A detective named Isabella with an irrational fear of feathers (pteronophobia).
+- A priceless, stolen Faberge egg known as the 'Serpent's Kiss'.
+- A futuristic, rain-slicked city perpetually shrouded in neon-lit fog."}]

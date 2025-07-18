@@ -1,0 +1,4 @@
+[{"role": "user", "content": "Please write a short story. The narrative should occasionally fracture, drifting into moments of surreal, dream-like absurdity before returning to the central plot. Ensure the story contains these three specific items:
+- A young witch named Elara whose spells always have unexpected, comical side effects.
+- An ancient, magical grimoire that only reveals its secrets when held upside down.
+- The setting is an enchanted forest where the trees whisper riddles instead of secrets."}]
