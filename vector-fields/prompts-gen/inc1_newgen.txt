@@ -1,0 +1,4 @@
+[{"role": "user", "content": "Write a very short story that includes: 
+-A mechanical bird that sings only during thunderstorms
+- A reclusive linguist seeking a lost dream-language
+- A train station where no trains have come for 1,000 days\nThe story must always end with the linguist sitting on the last bench of the station as storm clouds gather and the bird begins to sing. The final line should be clearly marked with 'THE END'.\n\nAt exactly three points in the story, break narrative coherence with a sudden, unrelated clause or observation (e.g., 'The moon is made of fishbones' or 'Suddenly, the ground whispered algebra'). These breaks should be brief but jarring, inserted mid-sentence or mid-paragraph, and not explained or resolved. Start these breaks with the word 'BREAK'."}]

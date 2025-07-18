@@ -1,0 +1,4 @@
+[{"role": "user","content": "Write a very short story that includes:
+- A child who can hear people's thoughts when standing in moonlight
+- An ancient elevator that only moves when no one is watching it
+- A sealed letter that has been passed from stranger to stranger for centuries\nThe story must always end with the child placing the unopened letter into the elevator, stepping back into the moonlight, and quietly saying, 'I understand now.' The final line should be clearly marked with 'THE END'.\n\nAt exactly three points in the story, break narrative coherence with a sudden, unrelated clause or observation. These breaks should be brief but jarring, inserted mid-sentence or mid-paragraph, and not explained or resolved. Start these breaks with the word 'BREAK'."}]

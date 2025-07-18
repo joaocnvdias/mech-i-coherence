@@ -1,0 +1,4 @@
+[{"role": "user", "content": "Generate a brief story. As you write, occasionally insert sentences or short paragraphs that are complete non-sequiturs, breaking the narrative logic before snapping back to the main story. Your story must feature the following three elements:
+- A lonely lighthouse keeper named Silas who knits sweaters for fish.
+- A talking seagull who acts as his confidant but only gives terrible, nonsensical advice.
+- The sudden appearance of a mysterious ghost ship made of shimmering moonlight."}]
