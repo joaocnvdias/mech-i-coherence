@@ -6,7 +6,7 @@ def main():
     #variables
     model_id = "meta-llama/Meta-Llama-3.1-8B-Instruct"
     prompt_type = 'generation' #or 'completion'
-    prompt_topic='viktor'
+    prompt_topic='inc_1'
     nr_gens = 200
 
     prompt = load_prompts(prompt_type, prompt_topic)
