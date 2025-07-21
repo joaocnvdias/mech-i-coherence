@@ -1,5 +1,4 @@
 import torch
-from math import acos
 
 def compute_layer_vectors(layer_activation):
     return layer_activation[1:]-layer_activation[:-1] #matrix except first_row - matrix except last_row
@@ -14,7 +13,9 @@ def compute_angle_layer(layer_vectors):
         #grab consecutive vectors
         a = layer_vectors[i,:]
         b = layer_vectors[i+1,:]
-        angles.append(acos(torch.dot(a, b) / (torch.norm(a) * torch.norm(b)))) #angle equation from vec dot product
+        cos_value = torch.dot(a, b) / (torch.norm(a) * torch.norm(b))
+        cos_value = torch.clamp(cos_value, -1, 1)
+        angles.append(torch.acos(cos_value)) #angle equation from vec dot product
 
     return torch.tensor(angles, dtype=torch.bfloat16)
 
