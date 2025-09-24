@@ -35,3 +35,8 @@ def energy_pipeline(layer_hidden_states):
     if not isinstance(layer_hidden_states, list):
         raise TypeError("Expected a list of tensors (one per layer of the model). Don't include the model's embedding layer")
     return sum_layer_energy(average_angle(compute_angle(compute_vectors(layer_hidden_states)))).item()
+
+def energy_pipeline_layer(layer_hidden_states):
+    if not isinstance(layer_hidden_states, list):
+        raise TypeError("Expected a list of tensors (one per layer of the model). Don't include the model's embedding layer")
+    return average_angle(compute_angle(compute_vectors(layer_hidden_states)))
