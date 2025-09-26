@@ -16,6 +16,22 @@ class ClauseSeparator:
             print("Choose an appropriate spaCy model. Ex install: python -m spacy download en_core_web_sm")
             self.nlp = None
     
+    def number_clauses(self, clauses_list):
+        """
+        Takes a list of clause strings and returns a single string
+        where each clause is numbered from 1 to N, matching the format
+        required by the paraphrasing prompt.
+        
+        Example:
+            Input: ["She went back to the table", "hoping to find another key"]
+            Output:
+                "1. She went back to the table\n2. hoping to find another key"
+        """
+        numbered = []
+        for i, clause in enumerate(clauses_list, start=1):
+            numbered.append(f"{i}. {clause.strip()}")
+        return "\n".join(numbered)
+
     def clause_split(self, text):
         """
         Find clause boundaries based on conjunctions and punctuation.    

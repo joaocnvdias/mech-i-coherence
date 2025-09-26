@@ -1,5 +1,6 @@
 import torch
 from transformers import GPT2Tokenizer, GPT2LMHeadModel, AutoTokenizer, AutoModelForCausalLM
+from openai import OpenAI
 
 def choose_device(device):
     if device==0:
@@ -97,4 +98,25 @@ def llama_gen(model, inputs, tokenizer, terminators, num_generations):
 
     return generations
     
+def get_rephrased_clauses(narrative_part: str):
+    client = OpenAI()
     
+    system_prompt = "You are helping in scientific analysis, so please be precise."
+    
+    user_prompt = (
+        "You will be given a part of a narrative, segmented into linguistic clauses and numbered from 1 to N.\n"
+        "Your task is to generate a paraphrase of this part of the narrative, using different wording (lexical diversity) "
+        "and phrasing (syntactic diversity), but keeping the meaning essentially the same.\n"
+        "You should keep the numbering of the clauses in the paraphrase.\n\n"
+        f"Part to paraphrase: ''' {narrative_part} '''"
+    )
+    
+    response = client.chat.completions.create(
+        model="gpt-4o-mini",  # cost-efficient, adjust as needed
+        messages=[
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": user_prompt}
+        ]
+    )
+    
+    return response.choices[0].message.content.strip()
