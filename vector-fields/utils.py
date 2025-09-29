@@ -1,7 +1,81 @@
 import torch
 import json
+import spacy
+from datasets import load_dataset
+
 from EnergyComputations import energy_pipeline
 from LLMfunctions import inference_activations
+
+class ClauseSeparator:
+    def __init__(self, size = 'small'):
+        if size == 'small':
+            self.nlp = spacy.load("en_core_web_sm")
+        elif size == 'large':
+            self.nlp = spacy.load("en_core_web_trf")
+        else:
+            print("Choose an appropriate spaCy model. Ex install: python -m spacy download en_core_web_sm")
+            self.nlp = None
+    
+    def number_clauses(self, clauses_list):
+        """
+        Takes a list of clause strings and returns a single string
+        where each clause is numbered from 1 to N, matching the format
+        required by the paraphrasing prompt.
+        
+        Example:
+            Input: ["She went back to the table", "hoping to find another key"]
+            Output:
+                "1. She went back to the table\n2. hoping to find another key"
+        """
+        numbered = []
+        for i, clause in enumerate(clauses_list, start=1):
+            numbered.append(f"{i}. {clause.strip()}")
+        return "\n".join(numbered)
+
+    def clause_split(self, text):
+        """
+        Find clause boundaries based on conjunctions and punctuation.    
+        Note we don't need to add periods to the rules because we iterate through
+        the sentences in the documents. 
+        """
+        if not self.nlp:
+            return None
+        
+        doc = self.nlp(text)
+        clauses = []
+        
+        for sentence in doc.sents:
+            
+            sent_clauses = []
+            current_tokens = []
+            
+            for token in sentence:
+                current_tokens.append(token.text)
+
+                #check for what decides a new clause
+                if (token.dep_ in ['cc', 'mark'] or  #coordinating/subordinating conjunctions
+                    token.text in [',', ';', ':'] or
+                    token.pos_ == 'SCONJ'):  #subordinating conjunction
+                    
+                    if len(current_tokens) > 1:  #dont create single-word clauses
+                        clause_text = ' '.join(current_tokens[:-1]).strip() #everything before curent token - that will go to the next clause
+                        if clause_text:
+                            sent_clauses.append(clause_text)
+                        current_tokens = [token.text] if token.text not in [',', ';', ':'] else [] #boundary token if not punctuation
+
+            #sentence over, add remaining tokens of sentence as final clause
+            if current_tokens:
+                clause_text = ' '.join(current_tokens).strip()
+                if clause_text:
+                    sent_clauses.append(clause_text)
+    
+            #safeguard
+            if not sent_clauses:
+                sent_clauses.append(sentence.text.strip())
+                
+            clauses.extend(sent_clauses)
+        
+        return clauses
 
 def load_prompts(prompt_type, prompt_topic):
     #load prompt from .txt
@@ -13,6 +87,12 @@ def load_prompts(prompt_type, prompt_topic):
             prompt = file.read()
         prompt = json.loads(prompt, strict=False)
     return prompt
+
+def load_tiny_stories():
+    ds = load_dataset("roneneldan/TinyStories")
+    tiny_train = ds['train']
+    tiny_val = ds['validation']
+    return tiny_train['text'], tiny_val['text']
     
 def energy_loop(generated_ids, model):
     energy_values = []
