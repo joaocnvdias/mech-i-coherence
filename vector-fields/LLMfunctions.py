@@ -107,7 +107,8 @@ def get_rephrased_clauses(narrative_part: str):
         "You will be given a part of a narrative, segmented into linguistic clauses and numbered from 1 to N.\n"
         "Your task is to generate a paraphrase of this part of the narrative, using different wording (lexical diversity) "
         "and phrasing (syntactic diversity), but keeping the meaning essentially the same.\n"
-        "You should keep the numbering of the clauses in the paraphrase.\n\n"
+        "You should keep the numbering of the clauses in the paraphrase.\n"
+        "Only output the paraphrase.\n\n"
         f"Part to paraphrase: ''' {narrative_part} '''"
     )
     
