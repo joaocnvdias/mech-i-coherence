@@ -98,7 +98,7 @@ def llama_gen(model, inputs, tokenizer, terminators, num_generations):
 
     return generations
     
-def get_rephrased_clauses(narrative_part: str):
+def get_rephrased_clauses(narrative_part, model_name, temp=1):
     client = OpenAI()
     
     system_prompt = "You are helping in scientific analysis, so please be precise."
@@ -111,13 +111,25 @@ def get_rephrased_clauses(narrative_part: str):
         "Only output the paraphrase.\n\n"
         f"Part to paraphrase: ''' {narrative_part} '''"
     )
-    
-    response = client.chat.completions.create(
-        model="gpt-4o-mini",  # cost-efficient, adjust as needed
-        messages=[
-            {"role": "system", "content": system_prompt},
-            {"role": "user", "content": user_prompt}
-        ]
-    )
-    
+
+    if model_name == 'gpt-5-mini':
+        response = client.chat.completions.create(
+            model=model_name,  
+            messages=[
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": user_prompt}
+            ]
+        )
+    elif model_name == 'gpt-o4-mini':
+        response = client.chat.completions.create(
+                model=model_name,  
+                temperature=temp,
+                messages=[
+                    {"role": "system", "content": system_prompt},
+                    {"role": "user", "content": user_prompt}
+                ]
+            )
+    else:
+        raise ValueError(f"Unknown model name '{model_name}'. Expected one of: ['gpt-5-mini', 'gpt-4o-mini'].")
+        
     return response.choices[0].message.content.strip()
