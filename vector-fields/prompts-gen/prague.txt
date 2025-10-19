@@ -1,4 +1,5 @@
-[{"role": "user","content": "Write a historical fiction story set in 17th-century Prague. The story must end with the protagonist choosing to become the secret keeper of a hidden library, locking the doors from the inside. Additionally, you must include the following three elements:
-- An automaton powered by clockwork and a glowing, silver liquid.
-- A secret society of alchemists trying to create the Philosopher's Stone.
-- A coded message delivered by a messenger from Emperor Rudolf II."}]
+[{"role": "user", "content": "Write a very short story set in 17th-century Prague that ends with the exact line:
+THE PROTAGONIST LOCKS THE DOORS AND BECOMES THE SECRET KEEPER.
+The story must end with that line as the final output and include exactly once:
+- an automaton powered by clockwork and a glowing silver liquid,
+Produce a beginning, middle, and brief ending. Do NOT add anything after the final line above."}]
